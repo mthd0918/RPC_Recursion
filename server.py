@@ -49,9 +49,7 @@ def main():
                 data_str = data.decode('utf-8')
 
                 requestData = json.loads(data_str)
-                print('Method:', requestData.get('method', 'No method specified'))
-                print('Params:', requestData.get('params', 'No params specified'))
-                print('ID:', requestData.get('id', 'No ID specified'))
+                
 
                 if data:
                     response = 'Processing ' + data_str
