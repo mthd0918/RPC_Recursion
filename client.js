@@ -1,15 +1,11 @@
+const { Socket } = require('dgram');
 const net = require('net');
 
-const serverAddress = '/tmp/socket_file';
+const server_address = '/tmp/socket_file';
 
-console.log(`Connecting to ${serverAddress}`);
+console.log(`Connecting to ${server_address}`);
 
-const client = net.createConnection({ path: serverAddress }, () => {
-    console.log('Connected to server');
-
-    const message = Buffer.from('Sending a message to the server side');
-    client.write(message);
-});
+const client = new Socket();
 
 client.on('data', (data) => {
     console.log('Server response: ' + data.toString());
