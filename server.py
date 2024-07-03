@@ -1,6 +1,7 @@
 import socket
 import os
 import math
+import json
 
 def floor(x):
     return math.floor(x)
@@ -47,8 +48,10 @@ def main():
                 data = connection.recv(1024)
                 data_str = data.decode('utf-8')
 
-                # データの表示
-                print('Recieved ' + data_str)
+                requestData = json.loads(data_str)
+                print('Method:', requestData.get('method', 'No method specified'))
+                print('Params:', requestData.get('params', 'No params specified'))
+                print('ID:', requestData.get('id', 'No ID specified'))
 
                 if data:
                     response = 'Processing ' + data_str

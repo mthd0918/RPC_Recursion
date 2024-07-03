@@ -9,17 +9,49 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+requests = [
+    {
+        "method": "floor",
+        "params": 3.54,
+        "param_types": "double",
+        "id": 1
+    }, {
+        "method": "nroot",
+        "params": [2, 8],
+        "param_types": "int",
+        "id": 2
+    },
+    , {
+        "method": "reverse",
+        "params": "yahoo",
+        "param_types": "string",
+        "id": 3
+    },
+    , {
+        "method": "validAnagram",
+        "params": "[]",
+        "param_types": "[string, string]",
+        "id": 4
+    },
+    , {
+        "method": "sort",
+        "params": "[anagram, nagaram]",
+        "param_types": "[string, string]",
+        "id": 5
+    },
+];
+
 client.connect(serverAddress, () => {
     console.log('Connected to server');
     userInput();
 });
 
-function userInput(question) {
-    rl.question('Please enter message: ', (input) => {
+function userInput() {
+    rl.question('Please enter id (1 - 6): ', (input) => {
         if (input === 'exit') {
             rl.close();
         } else {
-            const message = input;
+            const message = requests[input];
             console.log(`Sended massage: ` + input);
             client.write(JSON.stringify(message))
             userInput();
@@ -27,14 +59,13 @@ function userInput(question) {
     });
 }
 
-userInput()
+userInput();
+
+
+client.on('close', () => {
+    console.log('connection closed');
+})
 
 client.on('error', (error) => {
     console.error('Socket error:', error);
-});
-
-process.on('SIGINT', () => {
-    console.log('Closing client...');
-    client.end();
-    process.exit();
 });
