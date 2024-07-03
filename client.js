@@ -1,32 +1,40 @@
-const { Socket } = require('dgram');
 const net = require('net');
+const readline = require('readline');
+const serverAddress = '/tmp/socket_file';
 
-const server_address = '/tmp/socket_file';
+const client = new net.Socket();
 
-console.log(`Connecting to ${server_address}`);
-
-const client = new Socket();
-
-client.on('data', (data) => {
-    console.log('Server response: ' + data.toString());
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
 });
 
-client.on('end', () => {
-    console.log('Disconnected from server');
+client.connect(serverAddress, () => {
+    console.log('Connected to server');
+    userInput();
 });
 
-client.on('error', (err) => {
-    console.error('Error: ', err.message);
+function userInput(question) {
+    rl.question('Please enter message: ', (input) => {
+        if (input === 'exit') {
+            rl.close();
+        } else {
+            const message = input;
+            console.log(`Sended massage: ` + input);
+            client.write(JSON.stringify(message))
+            userInput();
+        }
+    });
+}
 
+userInput()
+
+client.on('error', (error) => {
+    console.error('Socket error:', error);
 });
 
-setTimeout(() => {
-    console.log('Socket time out, ending listeninig for server message');
+process.on('SIGINT', () => {
+    console.log('Closing client...');
     client.end();
-}, 2000);
-
-process.on('SGINT', () => {
-    console.log('Closing socket');
-    client.end();
-    process.exit(0);
+    process.exit();
 });

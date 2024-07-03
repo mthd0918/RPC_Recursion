@@ -25,8 +25,6 @@ def sort(strArr):
 
 def main():
 
-
-
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
     server_address = '/tmp/socket_file'
@@ -45,9 +43,11 @@ def main():
         try:
             print('connection from', client_address)
             while True:
-                data = connection.recv(32)
+                # データを受け取り、バイナリから文字列へデコード
+                data = connection.recv(1024)
                 data_str = data.decode('utf-8')
 
+                # データの表示
                 print('Recieved ' + data_str)
 
                 if data:
