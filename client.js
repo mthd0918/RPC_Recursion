@@ -9,36 +9,37 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-requests = [
+const requests = [
     {
         "method": "floor",
-        "params": 3.54,
-        "param_types": "double",
-        "id": 1
-    }, {
+        "params": [3.54],
+        "param_types": ["double"],
+        "id": 0
+    },
+    {
         "method": "nroot",
         "params": [2, 8],
-        "param_types": "int",
+        "param_types": ["int", "int"],
+        "id": 1
+    },
+    {
+        "method": "reverse",
+        "params": ["yahoo"],
+        "param_types": ["string"],
         "id": 2
     },
-    , {
-        "method": "reverse",
-        "params": "yahoo",
-        "param_types": "string",
+    {
+        "method": "validAnagram",
+        "params": ["abcba", "abcba"],
+        "param_types": ["string", "string"],
         "id": 3
     },
-    , {
-        "method": "validAnagram",
-        "params": "[]",
-        "param_types": "[string, string]",
-        "id": 4
-    },
-    , {
+    {
         "method": "sort",
-        "params": "[anagram, nagaram]",
-        "param_types": "[string, string]",
-        "id": 5
-    },
+        "params": ["dcba"],
+        "param_types": ["string", "string"],
+        "id": 4
+    }
 ];
 
 client.connect(serverAddress, () => {
@@ -47,20 +48,21 @@ client.connect(serverAddress, () => {
 });
 
 function userInput() {
-    rl.question('Please enter id (1 - 6): ', (input) => {
+    rl.question('Please enter id (0 - 4) or type exit: ', (input) => {
         if (input === 'exit') {
             rl.close();
-        } else {
+            client.end();
+        } else if (requests[input]) {
             const message = requests[input];
-            console.log(`Sended massage: ` + input);
-            client.write(JSON.stringify(message))
+            console.log('Sending message:', JSON.stringify(message, null, 2));
+            client.write(JSON.stringify(message));
+            userInput();
+        } else {
+            console.log('Invalid input. Please enter a number between 0 and 4.');
             userInput();
         }
     });
 }
-
-userInput();
-
 
 client.on('close', () => {
     console.log('connection closed');
