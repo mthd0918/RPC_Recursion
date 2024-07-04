@@ -64,6 +64,10 @@ function userInput() {
     });
 }
 
+client.on('data', (data) => {
+    console.log('Recieved: ' + data.toString());
+});
+
 client.on('close', () => {
     console.log('connection closed');
 })
